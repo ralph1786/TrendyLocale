@@ -1,8 +1,7 @@
 import beautifulImage from "../../src/assets/bora-bora-3023437.jpg";
 
 const initialState = {
-  locations: [],
-  selectedLocation: null
+  locations: []
 };
 
 const locationReducer = (state = initialState, action) => {
@@ -20,22 +19,8 @@ const locationReducer = (state = initialState, action) => {
       return {
         ...state,
         locations: state.locations.filter(
-          location => location.key !== state.selectedLocation.key
-        ),
-        selectedLocation: null
-      };
-
-    case "SELECTED_LOCATION":
-      return {
-        ...state,
-        selectedLocation: state.locations.find(
-          location => location.key === action.payload
+          location => location.key !== action.payload
         )
-      };
-    case "DESELECT_LOCATION":
-      return {
-        ...state,
-        selectedLocation: null
       };
     default:
       return state;
