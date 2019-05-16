@@ -5,21 +5,9 @@ export const addLocation = name => {
   };
 };
 
-export const removeLocation = () => {
+export const removeLocation = key => {
   return {
-    type: "REMOVE_LOCATION"
-  };
-};
-
-export const selectedLocation = key => {
-  return {
-    type: "SELECTED_LOCATION",
+    type: "REMOVE_LOCATION",
     payload: key
-  };
-};
-
-export const deselectLocation = () => {
-  return {
-    type: "DESELECT_LOCATION"
   };
 };
