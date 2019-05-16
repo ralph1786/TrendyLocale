@@ -5,6 +5,7 @@ import FindPlacesScreen from "./src/screens/FindPlaces/FindPlaces";
 import LocationDetailsScreen from "./src/screens/LocationDetails/LocationDetails";
 import { Provider } from "react-redux";
 import storeConfig from "./store/StoreConfig";
+import SideMenu from "./src/screens/SideMenu/SideMenu";
 
 const store = storeConfig();
 
@@ -35,10 +36,19 @@ Navigation.registerComponent(
 
 Navigation.registerComponent(
   "trendy-locale.LocationDetailsScreen",
-  () => LocationDetailsScreen
+  () => LocationDetailsScreen,
+  store,
+  Provider
 );
 
-//Start a App
+Navigation.registerComponent(
+  "trendy-locale.SideMenuScreen",
+  () => SideMenu,
+  store,
+  Provider
+);
+
+//Start screen for our application
 
 Navigation.startSingleScreenApp({
   screen: {
