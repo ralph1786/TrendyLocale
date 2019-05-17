@@ -1,8 +1,11 @@
 import React, { Component } from "react";
-import { View } from "react-native";
-import AddPlaceInput from "../../components/AddPlaceInput";
+import { View, Text, Button, ScrollView, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { addLocation } from "../../../store/actions/actions";
+import ReusableHeaderText from "../../components/UI/ReusableHeaderText";
+import AddPlaceInput from "../../components/AddPlaceInput";
+import ImagePicker from "../../components/ImagePicker";
+import LocationPicker from "../../components/LocationPicker";
 
 export class SharePlacesScreen extends Component {
   /*The constructor and the setOnNavigatorEvent is used
@@ -12,6 +15,11 @@ export class SharePlacesScreen extends Component {
     event.id.
     The id is passed to the icon in the startMainTab file.
   */
+
+  state = {
+    locationName: ""
+  };
+
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigationEvent);
@@ -28,18 +36,47 @@ export class SharePlacesScreen extends Component {
     }
   };
 
-  addLocationHandler = locationName => {
-    this.props.addLocation(locationName);
+  addLocationHandler = () => {
+    if (this.state.locationName.trim() !== "") {
+      this.props.addLocation(this.state.locationName);
+    }
+  };
+
+  onChangeTextHandler = value => {
+    this.setState({
+      locationName: value
+    });
   };
 
   render() {
     return (
-      <View>
-        <AddPlaceInput addLocation={this.addLocationHandler} />
-      </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <ReusableHeaderText>Share Your Favorite Locale</ReusableHeaderText>
+          <ImagePicker />
+          <LocationPicker />
+          <AddPlaceInput
+            locationName={this.state.locationName}
+            changeHandler={this.onChangeTextHandler}
+          />
+          <View style={styles.buttonStyling}>
+            <Button title="Share Location" onPress={this.addLocationHandler} />
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center"
+  },
+  buttonStyling: {
+    margin: 6
+  }
+});
 
 const mapDispatchToProps = dispatch => {
   return {
