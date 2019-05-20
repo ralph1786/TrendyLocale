@@ -2,13 +2,25 @@ import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 
 const ReusableButton = props => {
-  return (
-    <TouchableOpacity onPress={props.onClick}>
-      <View style={[styles.button, { backgroundColor: props.color }]}>
-        <Text style={styles.text}>{props.children}</Text>
-      </View>
-    </TouchableOpacity>
+  const content = (
+    <View
+      style={[
+        styles.button,
+        { backgroundColor: props.color },
+        props.disabled ? styles.disabled : null
+      ]}
+    >
+      <Text style={props.disabled ? styles.disabledText : styles.text}>
+        {props.children}
+      </Text>
+    </View>
   );
+
+  if (props.disabled) {
+    return content;
+  }
+
+  return <TouchableOpacity onPress={props.onClick}>{content}</TouchableOpacity>;
 };
 
 const styles = StyleSheet.create({
@@ -19,6 +31,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white"
+  },
+  disabled: {
+    backgroundColor: "#bfbdbd"
+  },
+  disabledText: {
+    color: "#777676"
   }
 });
 
