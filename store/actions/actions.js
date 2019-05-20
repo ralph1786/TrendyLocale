@@ -11,3 +11,10 @@ export const removeLocation = key => {
     payload: key
   };
 };
+
+export const userAuth = authData => {
+  return {
+    type: "USER_AUTH",
+    payload: authData
+  };
+};
