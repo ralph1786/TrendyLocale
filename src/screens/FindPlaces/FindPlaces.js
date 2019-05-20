@@ -1,9 +1,16 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { connect } from "react-redux";
 import ListLocations from "../../components/ListLocations";
+import ReusableButton from "../../components/UI/ReusableButton";
 
 export class FindPlacesScreen extends Component {
+  state = {
+    locationsLoaded: false,
+    buttonAnimation: new Animated.Value(1),
+    locationsAnimation: new Animated.Value(0)
+  };
+
   //See sharePlaces file for info on what code below is doing.
   constructor(props) {
     super(props);
@@ -36,13 +43,58 @@ export class FindPlacesScreen extends Component {
     });
   };
 
+  locationsLoadedAnimation = () => {
+    Animated.timing(this.state.locationsAnimation, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true
+    }).start();
+  };
+
+  findLocationsHandler = () => {
+    Animated.timing(this.state.buttonAnimation, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true
+    }).start(() => {
+      this.setState({
+        locationsLoaded: true
+      });
+      this.locationsLoadedAnimation();
+    });
+  };
+
   render() {
-    return (
-      <View>
+    let content = this.state.locationsLoaded ? (
+      <Animated.View
+        style={{
+          opacity: this.state.locationsAnimation
+        }}
+      >
         <ListLocations
           locations={this.props.locations}
           selectedLocation={this.locationClickedHandler}
         />
+      </Animated.View>
+    ) : (
+      <Animated.View
+        style={{
+          opacity: this.state.buttonAnimation
+        }}
+      >
+        <ReusableButton onClick={this.findLocationsHandler} color="#07adbc">
+          Find Locations
+        </ReusableButton>
+      </Animated.View>
+    );
+
+    return (
+      <View
+        style={
+          this.state.locationsLoaded ? null : styles.buttonContainerStyling
+        }
+      >
+        {content}
       </View>
     );
   }
@@ -53,5 +105,13 @@ const mapStateToProps = state => {
     locations: state.locations.locations
   };
 };
+
+const styles = StyleSheet.create({
+  buttonContainerStyling: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  }
+});
 
 export default connect(mapStateToProps)(FindPlacesScreen);
