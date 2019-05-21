@@ -3,6 +3,7 @@ import { View, StyleSheet, Animated } from "react-native";
 import { connect } from "react-redux";
 import ListLocations from "../../components/ListLocations";
 import ReusableButton from "../../components/UI/ReusableButton";
+import { fetchAllLocations } from "../../../store/actions/actions";
 
 export class FindPlacesScreen extends Component {
   state = {
@@ -15,6 +16,10 @@ export class FindPlacesScreen extends Component {
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigationEvent);
+  }
+
+  componentDidMount() {
+    this.props.fetchAllLocations();
   }
 
   onNavigationEvent = event => {
@@ -106,6 +111,12 @@ const mapStateToProps = state => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAllLocations: () => dispatch(fetchAllLocations())
+  };
+};
+
 const styles = StyleSheet.create({
   buttonContainerStyling: {
     flex: 1,
@@ -114,4 +125,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps)(FindPlacesScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FindPlacesScreen);
