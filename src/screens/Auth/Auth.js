@@ -11,7 +11,7 @@ import ReusableButton from "../../components/UI/ReusableButton";
 import background from "../../../src/assets/background.jpg";
 import validate from "../../validations/validations";
 import { connect } from "react-redux";
-import { userAuth } from "../../../store/actions/actions";
+import { userAuth } from "../../../store/actions/auth";
 
 import startTab from "../MainTabs/startMainTabs";
 
