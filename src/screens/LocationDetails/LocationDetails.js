@@ -1,11 +1,31 @@
 import React, { Component } from "react";
-import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 import { removeLocation } from "../../../store/actions/actions";
+import MapView from "react-native-maps";
 
 class LocationDetailsScreen extends Component {
-  //Selected location is passProps in the FindPlaces file.
+  //SelectedLocation is obtained from passProps in the FindPlaces file.
+
+  state = {
+    chosenLocationCoords: {
+      latitude: this.props.selectedLocation.location.latitude,
+      longitude: this.props.selectedLocation.location.longitude,
+      latitudeDelta: 0.0122,
+      longitudeDelta:
+        (Dimensions.get("window").width / Dimensions.get("window").height) *
+        0.0122
+    }
+  };
+
   deleteLocationHandler = () => {
     this.props.deleteLocation(this.props.selectedLocation.key);
     this.props.navigator.pop({
@@ -15,6 +35,11 @@ class LocationDetailsScreen extends Component {
   };
 
   render() {
+    let marker = null;
+
+    if (this.state.chosenLocationCoords) {
+      marker = <MapView.Marker coordinate={this.state.chosenLocationCoords} />;
+    }
     return (
       <View style={styles.containerStyling}>
         <View>
@@ -22,6 +47,12 @@ class LocationDetailsScreen extends Component {
             source={this.props.selectedLocation.image}
             style={styles.imageStyling}
           />
+          <MapView
+            region={this.state.chosenLocationCoords}
+            style={styles.mapStyling}
+          >
+            {marker}
+          </MapView>
           <Text style={styles.locationName}>
             {this.props.selectedLocation.name}
           </Text>
@@ -54,6 +85,10 @@ const styles = StyleSheet.create({
   },
   deleteIcon: {
     alignItems: "center"
+  },
+  mapStyling: {
+    width: "100%",
+    height: 175
   }
 });
 
