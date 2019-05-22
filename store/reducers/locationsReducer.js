@@ -1,19 +1,13 @@
-import beautifulImage from "../../src/assets/bora-bora-3023437.jpg";
-
 const initialState = {
   locations: []
 };
 
 const locationReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "ADD_LOCATION":
+    case "GET_ALL_LOCATIONS":
       return {
         ...state,
-        locations: state.locations.concat({
-          key: Math.random(),
-          name: action.payload,
-          image: beautifulImage
-        })
+        locations: action.payload
       };
     case "REMOVE_LOCATION":
       return {
