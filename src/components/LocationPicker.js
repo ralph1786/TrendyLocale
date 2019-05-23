@@ -15,6 +15,20 @@ class LocationPicker extends Component {
     pickedLocationMarker: false
   };
 
+  resetStateHandler = () => {
+    this.setState({
+      pickedLocation: {
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0122,
+        longitudeDelta:
+          (Dimensions.get("window").width / Dimensions.get("window").height) *
+          0.0122
+      },
+      pickedLocationMarker: false
+    });
+  };
+
   locationPickedHandler = e => {
     let coordinates = e.nativeEvent.coordinate;
     //line below (this.map) is referencing the ref prop in MapView component.
