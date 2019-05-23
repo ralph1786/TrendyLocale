@@ -13,6 +13,7 @@ import ReusableHeaderText from "../../components/UI/ReusableHeaderText";
 import AddPlaceInput from "../../components/AddPlaceInput";
 import UserImagePicker from "../../components/UserImagePicker";
 import LocationPicker from "../../components/LocationPicker";
+import { resetRedirect } from "../../../store/actions/actions";
 
 export class SharePlacesScreen extends Component {
   /*The constructor and the setOnNavigatorEvent is used
@@ -40,7 +41,26 @@ export class SharePlacesScreen extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigationEvent);
   }
 
+  resetStateHandler = () => {
+    this.setState({
+      locationName: "",
+      locationCoords: {
+        value: null,
+        valid: false
+      },
+      image: {
+        value: null,
+        valid: false
+      }
+    });
+  };
+
   onNavigationEvent = event => {
+    if (event.type === "ScreenChangedEvent") {
+      if (event.id === "willAppear") {
+        this.props.resetRedirect();
+      }
+    }
     if (event.type === "NavBarButtonPress") {
       if (event.id === "toggleSideMenu") {
         this.props.navigator.toggleDrawer({
@@ -59,6 +79,13 @@ export class SharePlacesScreen extends Component {
         this.state.image.value
       );
     }
+    this.resetStateHandler();
+    /*The two function below are being called using ref,
+    see the components below. The resetStateHandler are inside their respective
+    component, but we can access them using ref. 
+    */
+    this.imagePicker.resetStateHandler();
+    this.locationPicker.resetStateHandler();
   };
 
   onChangeTextHandler = value => {
@@ -88,6 +115,12 @@ export class SharePlacesScreen extends Component {
     });
   };
 
+  componentDidUpdate() {
+    if (this.props.redirect) {
+      this.props.navigator.switchToTab({ tabIndex: 0 });
+    }
+  }
+
   render() {
     const conditionalButton =
       this.state.locationName &&
@@ -107,8 +140,14 @@ export class SharePlacesScreen extends Component {
       <ScrollView>
         <View style={styles.container}>
           <ReusableHeaderText>Share Your Favorite Locale</ReusableHeaderText>
-          <UserImagePicker onChosenImage={this.chosenImageHandler} />
-          <LocationPicker locationPicked={this.locationPickedHandler} />
+          <UserImagePicker
+            onChosenImage={this.chosenImageHandler}
+            ref={ref => (this.imagePicker = ref)}
+          />
+          <LocationPicker
+            locationPicked={this.locationPickedHandler}
+            ref={ref => (this.locationPicker = ref)}
+          />
           <AddPlaceInput
             locationName={this.state.locationName}
             changeHandler={this.onChangeTextHandler}
@@ -136,14 +175,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    isLoading: state.ui.isLoading
+    isLoading: state.ui.isLoading,
+    redirect: state.locations.redirect
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     addLocation: (locationName, location, image) =>
-      dispatch(addLocation(locationName, location, image))
+      dispatch(addLocation(locationName, location, image)),
+    resetRedirect: () => dispatch(resetRedirect())
   };
 };
 
