@@ -18,11 +18,13 @@ export class FindPlacesScreen extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigationEvent);
   }
 
-  componentDidMount() {
-    this.props.fetchAllLocations();
-  }
-
   onNavigationEvent = event => {
+    //First conditional is related to redirecting.
+    if (event.type === "ScreenChangedEvent") {
+      if (event.id === "willAppear") {
+        this.props.fetchAllLocations();
+      }
+    }
     if (event.type === "NavBarButtonPress") {
       if (event.id === "toggleSideMenu") {
         this.props.navigator.toggleDrawer({
