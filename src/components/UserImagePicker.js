@@ -7,22 +7,31 @@ class UserImagePicker extends Component {
     chosenImage: null
   };
 
-  chosenImageHandler = () => {
-    ImagePicker.showImagePicker({ title: "Choose An Image" }, res => {
-      if (res.didCancel) {
-        console.log("User Cancelled");
-      } else if (res.error) {
-        console.log("error", res.error);
-      } else {
-        this.setState({
-          chosenImage: { uri: res.uri }
-        });
-        this.props.onChosenImage({
-          uri: res.uri,
-          base64: res.data
-        });
-      }
+  resetStateHandler = () => {
+    this.setState({
+      chosenImage: null
     });
+  };
+
+  chosenImageHandler = () => {
+    ImagePicker.showImagePicker(
+      { title: "Choose An Image", maxWidth: 700, maxHeight: 500 },
+      res => {
+        if (res.didCancel) {
+          console.log("User Cancelled");
+        } else if (res.error) {
+          console.log("error", res.error);
+        } else {
+          this.setState({
+            chosenImage: { uri: res.uri }
+          });
+          this.props.onChosenImage({
+            uri: res.uri,
+            base64: res.data
+          });
+        }
+      }
+    );
   };
 
   render() {
