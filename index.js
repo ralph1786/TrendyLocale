@@ -7,7 +7,7 @@ import App from "./App";
 // import { name as appName } from "./app.json";
 // import { Provider } from "react-redux";
 // import storeConfig from "./store/StoreConfig";
-
+App();
 // const store = storeConfig();
 
 // const reactNativeApp = () => (
