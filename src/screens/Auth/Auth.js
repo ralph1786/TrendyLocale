@@ -4,16 +4,15 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 import ReusableInput from "../../components/UI/ReusableInput";
 import ReusableButton from "../../components/UI/ReusableButton";
 import background from "../../../src/assets/background.jpg";
 import validate from "../../validations/validations";
 import { connect } from "react-redux";
-import { userAuth } from "../../../store/actions/auth";
-
-import startTab from "../MainTabs/startMainTabs";
+import { userAuth, autoSignIn } from "../../../store/actions/auth";
 
 class AuthScreen extends Component {
   state = {
@@ -63,13 +62,16 @@ class AuthScreen extends Component {
     Dimensions.removeEventListener("change", this.updateLayout);
   }
 
+  componentDidMount() {
+    this.props.autoSignIn();
+  }
+
   loginHandler = () => {
     const authData = {
       email: this.state.inputControls.email.value,
       password: this.state.inputControls.password.value
     };
-    this.props.userAuth(authData);
-    startTab();
+    this.props.userAuth(authData, this.state.logInMode);
   };
 
   onChangeHandler = (key, value) => {
@@ -122,6 +124,23 @@ class AuthScreen extends Component {
       />
     );
 
+    let submitButton = this.props.isLoading ? (
+      <ActivityIndicator />
+    ) : (
+      <ReusableButton
+        onClick={this.loginHandler}
+        color="#07adbc"
+        disabled={
+          !this.state.inputControls.email.isValid ||
+          !this.state.inputControls.password.isValid ||
+          (!this.state.inputControls.confirmPassword.isValid &&
+            !this.state.logInMode)
+        }
+      >
+        Submit
+      </ReusableButton>
+    );
+
     return (
       <ImageBackground source={background} style={styles.backgroundImage}>
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -155,18 +174,7 @@ class AuthScreen extends Component {
             />
             {content}
           </View>
-          <ReusableButton
-            onClick={this.loginHandler}
-            color="#07adbc"
-            disabled={
-              !this.state.inputControls.email.isValid ||
-              !this.state.inputControls.password.isValid ||
-              (!this.state.inputControls.confirmPassword.isValid &&
-                !this.state.logInMode)
-            }
-          >
-            Submit
-          </ReusableButton>
+          {submitButton}
         </KeyboardAvoidingView>
       </ImageBackground>
     );
@@ -192,13 +200,20 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = state => {
+  return {
+    isLoading: state.ui.isLoading
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
-    userAuth: authData => dispatch(userAuth(authData))
+    userAuth: (authData, logInMode) => dispatch(userAuth(authData, logInMode)),
+    autoSignIn: () => dispatch(autoSignIn())
   };
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(AuthScreen);
