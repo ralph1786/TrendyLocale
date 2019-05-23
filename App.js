@@ -50,9 +50,10 @@ Navigation.registerComponent(
 
 //Start screen for our application
 
-Navigation.startSingleScreenApp({
-  screen: {
-    screen: "trendy-locale.AuthScreen",
-    title: "Login"
-  }
-});
+export default () =>
+  Navigation.startSingleScreenApp({
+    screen: {
+      screen: "trendy-locale.AuthScreen",
+      title: "Login"
+    }
+  });
