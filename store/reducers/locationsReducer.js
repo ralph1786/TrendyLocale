@@ -1,5 +1,6 @@
 const initialState = {
-  locations: []
+  locations: [],
+  redirect: false
 };
 
 const locationReducer = (state = initialState, action) => {
@@ -15,6 +16,16 @@ const locationReducer = (state = initialState, action) => {
         locations: state.locations.filter(
           location => location.key !== action.payload
         )
+      };
+    case "REDIRECT_SCREEN":
+      return {
+        ...state,
+        redirect: true
+      };
+    case "RESET_REDIRECT":
+      return {
+        ...state,
+        redirect: false
       };
     default:
       return state;
